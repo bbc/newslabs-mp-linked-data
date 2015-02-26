@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title></title>
+
+  <style media="screen">
+    body {
+      font-family: sans-serif;
+    }
+    path {
+      stroke: #fff;
+      stroke-linejoin: round;
+      stroke-width: 0.5;
+    }
+    .Alliance {
+      fill: #FFCC00;
+    }
+    .Conservative {
+      fill: #333399;
+    }
+    .DemocraticUnionist {
+      fill: #CC3300;
+    }
+    .Green {
+      fill: #339900;
+    }
+    .Independent {
+      fill: #996699;
+    }
+    .Labour {
+      fill: #CC0000;
+    }
+    .LabourCoop {
+      fill: #CC0000;
+    }
+    .LiberalDemocrat {
+      fill: #FF9900;
+    }
+    .PlaidCymru {
+      fill: #006600;
+    }
+    .Respect {
+      fill: #FF3300;
+    }
+    .ScottishNational {
+      fill: #FFCC00;
+    }
+    .SinnFein {
+      fill: #003300;
+    }
+    .SocialDemocraticLabourParty {
+      fill: #669966;
+    }
+    .Speaker {
+      fill: #333399;
+    }
+    .UKIP {
+      fill: #70147A;
+    }
+    .active {
+      fill-opacity: 0.5;
+    }
+    
+    #description {
+      position: fixed;
+      pointer-events: none;
+    }
+  </style>
+</head>
+
+<body>
+  
+  <div id="description">
+    Click on a constituency to view the data associated with it
+  </div>
+  
+  <svg id="map" width="800" height="1200"></svg>
+
+  <script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/topojson/1.6.18/topojson.min.js"></script>
+
+  <script>
+    var svg = d3.select("svg");
+
+    var width = parseInt(svg.style("width")),
+      height = parseInt(svg.style("height"));
+
+    d3.csv('../mp-linked-data.csv', function(error, constituencies) {
+      d3.json('topography.json', function(error, topography) {
+
+        var projection = d3.geo.albers()
+          .center([0, 55.4])
+          .rotate([4.4, 0])
+          .parallels([50, 60])
+          .scale(6000)
+          .translate([width / 2, height / 2]);
+
+        var path = d3.geo.path()
+          .projection(projection);
+
+        svg.selectAll('.wpc')
+          .data(topojson.feature(topography, topography.objects.wpc).features)
+          .enter().append('path')
+          .datum(function(d) {
+            d.constituency = constituencies.filter(function(constituency) {
+              return constituency.constituency_gss_code == d.id;
+            })[0];
+            return d;
+          })
+          .attr('class', function(d) {
+            return d.constituency.mp_party.replace(/[^a-zA-Z]/g, '');
+          })
+          .on('mouseover', function(d) {
+            d3.select(this).classed("active", true);
+          })
+          .on('mouseout', function(d) {
+            d3.select(this).classed("active", false);
+          })
+          .on('click', function(d) {
+            d3.select('#description').html(Object.keys(d.constituency).map(function(key) {
+              return '<strong>' + key + ':</strong> ' + d.constituency[key];
+            }).join('<br>'));
+          })
+          .attr('d', path);
+
+      });
+    });
+  </script>
+
+</body>
+
+</html>
