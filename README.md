@@ -2,6 +2,8 @@
 
 This is a set of data about UK MPs and their constituencies, including [DBpedia](http://dbpedia.org/) and [BBC Things](http://www.bbc.co.uk/things/) URIs. Published in CSV format.
 
+Check out the [map demo](https://cdn.rawgit.com/BBC-News-Labs/mp-linked-data/eb8ad4217ee3a5682b7b747e91abaca0aeaad099/map-example/index.html) for an example of how this data can be visualised using UK topography data and D3.js.
+
 An extension of work by [Iain Collins](https://gist.github.com/iaincollins/8c8e78e8a930c7ea4dce) and [Mark A. Greenwood](https://gist.github.com/greenwoodma/52aa0c1ff478db5ecdda).
 
 ## Columns
